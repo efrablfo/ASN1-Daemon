@@ -1,8 +1,9 @@
 package com.asn1;
 
 /**
- *
+ * Interfaz con parametros de configuración necesarios para la ejecucion del Daemon
  * @author Efrain.Blanco
+ * @version 1.0
  */
 interface DaemonConfiguration {
     public static final String CMD_JAR_STMT = "java -jar ";
@@ -18,5 +19,6 @@ interface DaemonConfiguration {
     public static final String MAX_PROCESS_PROPERTY = "max-process";
     public static final String PROJECT_PATH = "user.dir";
     public static final String EXE_PROPERTIES_FILENAME = "exe.properties";
-    public static final String PACKAGE_NAME_PROPERTY_NAME = "package-name";
+    public static final String PACKAGE_NAME_PROPERTY = "package-name";
+    public static final String WAIT_TIME_PROPERTY = "wait-time";
 }

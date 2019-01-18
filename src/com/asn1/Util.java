@@ -1,7 +1,7 @@
 package com.asn1;
 
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,38 +9,68 @@ import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 
 /**
- *
- * @author Efrain.Blanco
+ * Clase utilitaria para el manejo de directorios y archivos de configuración
+ * @see java.nio.file
+ * @author Efrain Blanco
+ * @author Jhon Fernandez
+ * @version 1.0
  */
 public class Util {
     
-    public static Path getPath(Path path, String forlderName) throws IOException{
-        return Files.list(path).filter(folder -> {
-            return folder.toString().endsWith(forlderName) ;
-                }).findFirst().get();
+    /**
+     * Obtiene objeto <code>java.nio.file.Path</code> partiendo de un 
+     * directorio base y el nombre del folder o archivo a buscar
+     * @param basePath  directorio base
+     * @param forlderName   nombre de folder o archivo a buscar
+     * @return objeto <code>java.nio.file.Path</code> (ubicación del folder o archivo)
+     * @throws IOException  si hay algun error con el directorio base
+     */
+    protected static Path getPath(Path basePath, String forlderName) throws IOException {
+        return Files.list(basePath).filter(folder -> {
+            return folder.toString().endsWith(forlderName);
+        }).findFirst().get();
     }
     
-    public static void moveFolder(Path src, Path dest) throws IOException {
-        Files.list(src).forEach( pathFile ->{
+    /**
+     * Mueve el contenido de un folder a un directorio especifico
+     * @see #move(java.nio.file.Path, java.nio.file.Path) 
+     * @param src   path origen
+     * @param dst   path destino 
+     * @throws IOException  si ocurre un error moviendo los archivos
+     */
+    protected static void moveFolder(Path src, Path dst) throws IOException {
+        Files.list(src).forEach(pathFile -> {
             try {
-                Files.walk( pathFile).forEach(source -> move(source, dest.resolve(src.relativize(source))) );
+                Files.walk(pathFile).forEach(source -> move(source, dst.resolve(src.relativize(source))));
             } catch (IOException ex) {
-               ex.printStackTrace();
+                ex.printStackTrace();
             }
         });
     }
     
-    public static void move(Path source, Path dest) {
+    /**
+     * Mueve un arhivo a un directorio especifico
+     * @param src   path origen
+     * @param dst   path destino 
+     */
+    protected static void move(Path src, Path dst) {
         try {
-            Files.move(source, dest, StandardCopyOption.REPLACE_EXISTING);
+            Files.move(src, dst, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
     
-    public static Properties getPropertiesExeConfigFile(String asn1ExeConfigDir) throws Exception{
+    /**
+     * Retorna objeto con la información de archivo de configuración
+     * @param configFileDir directorio del archivo de configuración
+     * @return Objeto con la informacion del archivo de configuración
+     * @throws FileNotFoundException    si no encuentra arhivo de configuración
+     * @throws IOException  si no fue posible cargar el archivo de configuración  
+     */
+    protected static Properties getPropertiesConfigFile(String configFileDir) throws FileNotFoundException, IOException {
         Properties prop = new Properties();
-        FileInputStream input = new FileInputStream(asn1ExeConfigDir);
+        FileInputStream input = new FileInputStream(configFileDir);
         prop.load(input);
         return prop;
     }
